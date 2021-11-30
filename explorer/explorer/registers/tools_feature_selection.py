@@ -5,7 +5,14 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
-from sklearn.feature_selection import VarianceThreshold, SelectKBest, r_regression
+from sklearn.feature_selection import (
+    VarianceThreshold,
+    SelectKBest,
+    SelectPercentile,
+    r_regression,
+    chi2
+)
+from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
@@ -173,3 +180,78 @@ def prediction_flow(id_column, target_column, dataset):
 	scores = get_feature_scores(dataset_result, names, classif=False)
 
 	return scores
+
+
+# Classification methods
+
+
+def get_split_values(X, y, train_size):
+    '''
+    Used for testing the model
+    '''
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        train_size=train_size,
+        random_state= 23
+    )
+    
+    return X_train, X_test, y_train, y_test
+
+
+def get_remove_columns_target(dataset, remove_columns, target, axis):  
+    y = dataset[target]
+    X = dataset.drop(remove_columns,axis=axis)
+
+    return X, y
+
+
+def show_results(r):
+    df = pd.DataFrame(
+        r,
+        index=['size=X_train','size=y_test','train', 'test']
+    )
+    print(df.head().T)
+
+
+def model_fit(model, X_train, X_test, y_train, y_test, X_size, y_size, results, text):  
+    '''
+    Used to analize feature selection methods against a model.
+    For the initial process RandomForestClassifier was used
+    '''
+    model.fit(X_train, y_train)
+    r1 = model.score(X_train, y_train)
+    r2 = model.score(X_test, y_test)
+    results.update({text:[str(X_size),str(y_size),r1,r2]})
+
+
+def classification_flow(id_column, target_column, dataset):
+    X, y = get_remove_columns_target(
+        dataset,
+        [id_column,target_column],
+        target_column,
+        axis=1
+    )
+
+    # PCA
+    # pca = PCA(n_components = 'mle', svd_solver = 'auto')
+    # fit = pca.fit(X, y)
+    # X_new = pca.transform(X)
+    # score = pca.explained_variance_ratio_
+
+    # f_classif
+    # X_new = SelectPercentile(score_func=f_classif, percentile=80)
+
+    # mutual_info_classif
+    # X_new = SelectPercentile(score_func=mutual_info_classif, percentile=80)
+
+    # Chosen method: chi2
+    X_new = SelectPercentile(score_func=chi2, percentile=80)
+    fit = X_new.fit(X, y)
+    X_new = fit.transform(X)
+    score = fit.scores_
+
+    # show column scores
+    scores_table = get_feature_scores(score, X.columns, classif=True)
+
+    return scores_table

@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.urls import reverse
 
-from .tools_feature_selection import prediction_flow
+from .tools_feature_selection import prediction_flow, classification_flow
 
 
 #messages.add_message(request, messages.INFO, 'Hello world.')
@@ -46,7 +46,7 @@ def process_dataset(request):
 		if goal == 'prediction':
 			scores = prediction_flow(id_column, target_column, dataset)
 		elif goal == 'classification':
-			scores = ''
+			scores = classification_flow(id_column, target_column, dataset)
 
 	data = {'df': scores.to_html(), 'goal': goal}
 	
