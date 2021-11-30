@@ -2,5 +2,13 @@
 
 
 {% block content %}
-<p>Hello, world. You're at the registers process dataset view.</p>
+<p>Features are ordered by Scores and presented in descending order.</p>
+
+{{df|safe}}
+
+
+{% if goal == 'classification' %}
+	<p>Goal is: {{ goal }}</p>
+{% endif %}
+
 {% endblock content %}

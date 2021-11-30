@@ -28,7 +28,7 @@
 	    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 	    <label for="customFile">Upload dataset: </label>
-	    <input type="file" class="custom-file-input" id="customFile" name="filename" required="">
+	    <input type="file" class="custom-file-input" id="customFile" name="uploaded_file" required="">
 	    <br><br>
         <input type="radio" name="choice" id="predict" value="prediction" required="">
         <label for="predict">Prediction</label><br>
@@ -37,10 +37,10 @@
         <label for="classif">Classification</label><br>
         <br>
         <div class="mb-3">
-        	<label for="id_column" class="form-label requiredField">
+          <label for="id_column" class="form-label">
             Id dolumn name 
         	</label>
-        	<input type="id_column" name="id_column" placeholder="e.g. Id, passengerId, etc..." autocomplete="id_column" minlength="1" class="textinput textInput form-control" required="" id="id_column" style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+          <input type="id_column" name="id_column" placeholder="e.g. Id, passengerId, etc..." autocomplete="id_column" minlength="1" class="textinput textInput form-control" id="id_column" style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
         </div>
 
         <div id="div_id_username" class="mb-3">

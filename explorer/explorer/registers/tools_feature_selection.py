@@ -2,9 +2,9 @@
 This funtions were developed by the students to successfully make feature selection
 '''
 import pandas as pd
-import numpy as 
+import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from sklearn.feature_selection import VarianceThreshold, SelectKBest, r_regression
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
@@ -31,7 +31,7 @@ def get_feature_out(estimator, feature_in):
         return feature_in
 
 
-def get_ct_feature_names(ct):
+def get_ct_feature_names(ct, X_train):
     '''
     author: handles all estimators, pipelines inside ColumnTransfomer (CT)
     - doesn't work when remainder =='passthrough'
@@ -123,7 +123,7 @@ def get_df_selected_features(X_train, y_train, p_value, cat_cols, num_cols):
     
     df_column = pd.DataFrame(
     	X_pipe,
-    	columns=get_ct_feature_names(full_preproc_pipeline)
+        columns=get_ct_feature_names(full_preproc_pipeline, X_train)
     )
     column_names=pd.DataFrame(df_column.columns)
     # does not return p-values
@@ -141,7 +141,7 @@ def get_feature_scores(result_df, column_names, classif=False):
 
     scores=pd.concat([column_names,result_df], axis=1)
     scores.columns = ["Feature", "Scores"]
-    #return scores.sort_values(by=['Scores'], ascending=False).head(30)
+
     return scores.sort_values(by=['Scores'], ascending=False)
 
 
@@ -151,12 +151,12 @@ def prediction_flow(id_column, target_column, dataset):
 	Makes the feature selection for prediction datasets
 	'''
 
-	X_train, X_test, y_train, y_test = get_split_values(
-		dataset,
-		[id_column, target_column],
-		target_column,
-		test_size=0.25
-	)
+	if id_column:
+		remove_columns = [id_column, target_column]
+	else:
+		remove_columns = [target_column]
+
+	X_train, X_test, y_train, y_test = get_split_values(dataset,remove_columns,target_column,test_size=0.25)
 	cat_cols, num_cols = get_cat_num_cols(dataset, X_train)
 	dataset_result, names = get_df_selected_features(
 		X_train,
@@ -166,6 +166,5 @@ def prediction_flow(id_column, target_column, dataset):
 		num_cols
 	)
 	scores = get_feature_scores(dataset_result, names, classif=False)
+
 	return scores
-
-

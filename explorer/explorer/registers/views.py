@@ -5,6 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.urls import reverse
 
+from .tools_feature_selection import prediction_flow
+
 
 #messages.add_message(request, messages.INFO, 'Hello world.')
 
@@ -16,19 +18,19 @@ def load_dataset(request):
 
 def process_dataset(request):
 	MAXIMUM_CSV_SIZE = 3.0
+	data = {}
 
 	if request.method == "GET":
 		return HttpResponseRedirect(reverse("registers:load_dataset"))
 
 	if request.method == 'POST':
-		# <class 'django.core.files.uploadedfile.InMemoryUploadedFile'>
-		csv_file = request.FILES['filename']
+		csv_file = request.FILES['uploaded_file']
 
 		if not csv_file.name.endswith('.csv'):
 			messages.error(request,'File is not CSV type')
 			return HttpResponseRedirect(reverse("registers:load_dataset"))
 
-		#if file is too large, return
+		# if file is too large, redirect
 		if csv_file.size/(1000*1000) > MAXIMUM_CSV_SIZE:
 			messages.error(
 				request,
@@ -37,13 +39,15 @@ def process_dataset(request):
 			return HttpResponseRedirect(reverse("registers:load_dataset"))
 
 		goal = request.POST['choice']
-
-		id_column = request.POST['id_column']
+		id_column = request.POST['id_column'] # cuando no se diligencia viene ''
 		target_column = request.POST['target_column']
-
 		dataset = pd.read_csv(csv_file.temporary_file_path())
-		
-	import pdb; pdb.set_trace()
+
+		if goal == 'prediction':
+			scores = prediction_flow(id_column, target_column, dataset)
+		elif goal == 'classification':
+			scores = ''
+
+	data = {'df': scores.to_html(), 'goal': goal}
 	
-	return render(request, 'registers/show_features.html')
-	#return HttpResponse("Hello, world. You're at the registers process dataset view.")
+	return render(request, 'registers/show_features.html', data)
