@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "explorer.users",
     # Your stuff: custom apps go here
+    #"explorer.registers",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -272,5 +273,6 @@ ACCOUNT_ADAPTER = "explorer.users.adapters.AccountAdapter"
 SOCIALACCOUNT_ADAPTER = "explorer.users.adapters.SocialAccountAdapter"
 
 
-# Your stuff...
+# For working with the read_csv command from Pandas
 # ------------------------------------------------------------------------------
+FILE_UPLOAD_HANDLERS = ['django.core.files.uploadhandler.TemporaryFileUploadHandler',]

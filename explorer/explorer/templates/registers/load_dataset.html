@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Load dataset{% endblock %}
+
+{% block content %}
+  <h1>Feature selection</h1>
+  <p>This tool is for helping you select the best features for your dataset. Please have this considerations in mind:</p>
+
+  <ul>
+  	<li>You can upload datasets in <strong>.csv</strong> format.</li>
+  	<li>The dataset must have a maximum size of 3MB.</li>
+  	<li>Choose if your dataset will be used for prediction or classification.</li>
+  	<li>Fill in the inputs with the column names of your <strong>id</strong> and <strong>target</strong>. Please write them exactly as they appear in your dataset. Have in mind uppercase letters.</li>
+  </ul>
+
+  <form class="form-horizontal" method="post" action="{% url 'registers:process_dataset' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if messages %}
+	    {% for message in messages %}
+	    <p id="messages">{{message}}</p>
+	    {% endfor %}
+	{% endif %}
+    
+    <fieldset>
+	    <legend><h1>{{ question.question_text }}</h1></legend>
+	    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+	    <label for="customFile">Upload dataset: </label>
+	    <input type="file" class="custom-file-input" id="customFile" name="filename" required="">
+	    <br><br>
+        <input type="radio" name="choice" id="predict" value="prediction" required="">
+        <label for="predict">Prediction</label><br>
+
+        <input type="radio" name="choice" id="classif" value="classification">
+        <label for="classif">Classification</label><br>
+        <br>
+        <div class="mb-3">
+        	<label for="id_column" class="form-label requiredField">
+            Id dolumn name 
+        	</label>
+        	<input type="id_column" name="id_column" placeholder="e.g. Id, passengerId, etc..." autocomplete="id_column" minlength="1" class="textinput textInput form-control" required="" id="id_column" style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+        </div>
+
+        <div id="div_id_username" class="mb-3">
+        	<label for="target_column" class="form-label requiredField">
+                Target column name 
+            </label>
+            <input type="text" name="target_column" placeholder="e.g. Price, Genre, etc..." autocomplete="target_column" minlength="1" class="textinput textInput form-control" required="" id="target_column">
+       	</div>
+
+	</fieldset>
+
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">Get features</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}
