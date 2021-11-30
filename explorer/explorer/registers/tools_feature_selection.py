@@ -156,7 +156,12 @@ def prediction_flow(id_column, target_column, dataset):
 	else:
 		remove_columns = [target_column]
 
-	X_train, X_test, y_train, y_test = get_split_values(dataset,remove_columns,target_column,test_size=0.25)
+	X_train, X_test, y_train, y_test = get_split_values(
+        dataset,
+        remove_columns,
+        target_column,
+        test_size=0.25
+    )
 	cat_cols, num_cols = get_cat_num_cols(dataset, X_train)
 	dataset_result, names = get_df_selected_features(
 		X_train,
