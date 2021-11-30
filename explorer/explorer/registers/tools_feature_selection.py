@@ -185,9 +185,9 @@ def prediction_flow(id_column, target_column, dataset):
 # Classification methods
 
 
-def get_split_values(X, y, train_size):
+def classif_get_split_values(X, y, train_size):
     '''
-    Used for testing the model
+    Used for testing the ML classification model
     '''
     X_train, X_test, y_train, y_test = train_test_split(
         X,
@@ -197,6 +197,17 @@ def get_split_values(X, y, train_size):
     )
     
     return X_train, X_test, y_train, y_test
+
+
+def model_fit(model, X_train, X_test, y_train, y_test, X_size, y_size, results, text):
+    '''
+    Used to analize feature selection methods against a model.
+    For the initial process RandomForestClassifier was used
+    '''
+    model.fit(X_train, y_train)
+    r1 = model.score(X_train, y_train)
+    r2 = model.score(X_test, y_test)
+    results.update({text:[str(X_size),str(y_size),r1,r2]})
 
 
 def get_remove_columns_target(dataset, remove_columns, target, axis):  
@@ -212,17 +223,6 @@ def show_results(r):
         index=['size=X_train','size=y_test','train', 'test']
     )
     print(df.head().T)
-
-
-def model_fit(model, X_train, X_test, y_train, y_test, X_size, y_size, results, text):  
-    '''
-    Used to analize feature selection methods against a model.
-    For the initial process RandomForestClassifier was used
-    '''
-    model.fit(X_train, y_train)
-    r1 = model.score(X_train, y_train)
-    r2 = model.score(X_test, y_test)
-    results.update({text:[str(X_size),str(y_size),r1,r2]})
 
 
 def classification_flow(id_column, target_column, dataset):
