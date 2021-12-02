@@ -14,6 +14,11 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     # Registers
     path("registers/", include("explorer.registers.urls", namespace="registers")),
+    path(
+        "multivariate-analysis",
+        TemplateView.as_view(template_name="multivariate_analysis/index.html"),
+        name="multivariate_analysis"
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
