@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
-from .tools_feature_selection import prediction_flow, classification_flow
+from .tools_feature_selection import prediction_flow, classification_flow, save_to_csv
 from .models import Register
 from .forms import RegisterForm
 
@@ -70,7 +70,9 @@ def process_dataset(request):
 			if category.lower() == 'prediction':
 				scores = prediction_flow(id_column, target_column, dataset)
 			elif category.lower() == 'classification':
-				scores = classification_flow(id_column, target_column, dataset)
+				scores, X_new, fit_x = classification_flow(id_column, target_column, dataset)
+				new_df = save_to_csv(X_new, fit_x)
+				new_register.new_dataset = new_df.to_json(orient='split')
 
 			new_register.scores = scores.to_json(orient='split')
 			new_register.save()
@@ -79,7 +81,8 @@ def process_dataset(request):
 
 			data = {
 				'scores': scores.to_html(),
-				'category': category
+				'category': category,
+				'uuid': new_register.id
 			}
 	
 	return render(request, 'registers/show_features.html', data)
@@ -95,6 +98,7 @@ def my_datasets(request):
 @login_required
 def register_detail(request, register_id):
 	register = Register.objects.get(id=register_id)
+	# Transform JSON to Dataframe
 	scores = pd.read_json(register.scores, orient='split')
 	data = {
 		'scores': scores.to_html(),
@@ -103,9 +107,22 @@ def register_detail(request, register_id):
 	return render(request, 'registers/register_detail.html', data)
 
 
-# TODO: view to generate new dataset from classification
+@login_required
+def download_new_dataset(request, register_id):
+	'''
+	View to generate new dataset from classification
 
+	output: Downloadable CSV file
+	'''
+	register = Register.objects.get(id=register_id)
+
+	# Transform JSON to Dataframe
+	results = pd.read_json(register.new_dataset, orient='split')
+	response = HttpResponse(content_type='text/csv')
+	new_file_name = 'new_'+str(register.file_name)+'.csv'
+	response['Content-Disposition'] = 'attachment; filename='+new_file_name
+
+	results.to_csv(path_or_buf=response, float_format='%.3f')
+	return response
 
 # TODO: View from challenge 3
-
-

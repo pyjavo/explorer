@@ -33,6 +33,7 @@ class Register(models.Model):
         max_length=55, help_text=u'*Opcional'
     )
     scores = models.JSONField()
+    new_dataset = models.JSONField(default=dict)
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)

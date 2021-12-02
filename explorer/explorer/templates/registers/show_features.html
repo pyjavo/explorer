@@ -2,13 +2,21 @@
 
 
 {% block content %}
+<h1>Feature's scores</h1>
+<br>
 <p>Features are ordered by Scores and presented in descending order.</p>
 
+<br>
 {{ scores|safe }}
+<br>
 
-
-{% if goal == 'classification' %}
-	<p>Category is: {{ category }}</p>
+{% if category == 'Classification' %}
+	<a href="{% url 'registers:download_new_dataset' uuid %}">
+		<button class="btn btn-primary">Download generated CSV</button>
+	</a>
 {% endif %}
+<br>
+<br>
+
 
 {% endblock content %}

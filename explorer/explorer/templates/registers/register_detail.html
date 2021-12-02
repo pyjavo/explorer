@@ -2,8 +2,9 @@
 
 
 {% block content %}
-<h2>Register detail</h2>
+<h1>Register detail</h1>
 <br>
+
 <ul>
 	<li><strong>Name:</strong> {{ register.file_name }}</li>
 	<li><strong>Path:</strong> {{ register.file_path }}</li>
@@ -22,5 +23,11 @@
 		<br><br>
 		{{ scores|safe }}
 	</li>
+	<br>
+	{% if register.new_dataset %}
+	<li>
+		<a href="{% url 'registers:download_new_dataset' register.id %}"><button class="btn btn-primary">Download generated CSV</button></a>
+	</li>
+	{% endif %}
 </ul>
 {% endblock content %}

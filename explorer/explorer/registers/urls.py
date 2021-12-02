@@ -10,4 +10,9 @@ urlpatterns = [
     path('process-dataset', views.process_dataset, name='process_dataset'),
     path('my-datasets', views.my_datasets, name='my_datasets'),
     path("<uuid:register_id>/", views.register_detail, name="detail"),
+    path(
+        "download/<uuid:register_id>/",
+        views.download_new_dataset,
+        name="download_new_dataset"
+    ),
 ]
