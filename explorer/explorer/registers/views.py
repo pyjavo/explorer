@@ -8,13 +8,18 @@ from django.contrib.auth.decorators import login_required
 
 from .tools_feature_selection import prediction_flow, classification_flow
 from .models import Register
+from .forms import RegisterForm
 
 #messages.add_message(request, messages.INFO, 'Hello world.')
 
 @login_required
 def load_dataset(request):
-	contexto = 'algo'
-	context = {'contexto': contexto}
+	if request.method == 'GET':
+		formulario = RegisterForm()
+
+	context = {
+		'formulario': formulario,
+    }
 	return render(request, 'registers/load_dataset.html', context)
 
 
@@ -27,7 +32,8 @@ def process_dataset(request):
 		return HttpResponseRedirect(reverse("registers:load_dataset"))
 
 	if request.method == 'POST':
-		csv_file = request.FILES['uploaded_file']
+
+		csv_file = request.FILES['file_path']
 
 		if not csv_file.name.endswith('.csv'):
 			messages.error(request,'File is not CSV type')
@@ -41,17 +47,44 @@ def process_dataset(request):
 			)
 			return HttpResponseRedirect(reverse("registers:load_dataset"))
 
-		goal = request.POST['choice']
-		id_column = request.POST['id_column'] # if empty it is an empty str
-		target_column = request.POST['target_column']
-		dataset = pd.read_csv(csv_file.temporary_file_path())
+		formulario = RegisterForm(request.POST, request.FILES)
 
-		if goal == 'prediction':
-			scores = prediction_flow(id_column, target_column, dataset)
-		elif goal == 'classification':
-			scores = classification_flow(id_column, target_column, dataset)
+		if formulario.is_valid():
+			new_register = formulario.save(commit=False)
+			new_register.owner=request.user
 
-	data = {'df': scores.to_html(), 'goal': goal}
+			partial_name = new_register.file_path.name
+			try:
+				partial_name = partial_name.split('.csv')[0]
+			except IndexError:
+				new_register.file_name = new_register.file_path.name
+			else:
+				new_register.file_name = partial_name
+
+			# Dataset is created before temporary_file_path is lost after save
+			dataset = pd.read_csv(csv_file.temporary_file_path())
+			new_register.save()
+
+			category = request.POST['category']
+			id_column = request.POST['id_column'] # if empty it is an empty str
+			target_column = request.POST['target_column']
+
+			if category.lower() == 'prediction':
+				scores = prediction_flow(id_column, target_column, dataset)
+				print('scores', scores)
+				print('prediction solved')
+			elif category.lower() == 'classification':
+				scores = classification_flow(id_column, target_column, dataset)
+				print('scores', scores)
+				print('classification solved')
+
+			messages.success(request, "Tu dataset ha sido creado satisfactoriamente.")
+			# TODO: save scores in register
+
+			data = {
+				'df': scores.to_html(),
+				'category': category
+			}
 	
 	return render(request, 'registers/show_features.html', data)
 
@@ -68,3 +101,11 @@ def register_detail(request, register_id):
 	register = Register.objects.get(id=register_id)
 	data = {'register': register}
 	return render(request, 'registers/register_detail.html', data)
+
+
+# TODO: view to generate new dataset from classification
+
+
+# TODO: View from challenge 3
+
+

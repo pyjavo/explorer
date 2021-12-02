@@ -14,40 +14,36 @@
   	<li>Fill in the inputs with the column names of your <strong>id</strong> and <strong>target</strong>. Please write them exactly as they appear in your dataset. Have in mind uppercase letters.</li>
   </ul>
 
-  <form class="form-horizontal" method="post" action="{% url 'registers:process_dataset' %}" enctype="multipart/form-data">
+  <form id="loadDatasetForm" class="form-horizontal" method="post" action="{% url 'registers:process_dataset' %}" enctype="multipart/form-data">
     {% csrf_token %}
-
-    {% if messages %}
-	    {% for message in messages %}
-	    <p id="messages">{{message}}</p>
-	    {% endfor %}
-	{% endif %}
     
     <fieldset>
 	    <legend><h1>{{ question.question_text }}</h1></legend>
 	    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 	    <label for="customFile">Upload dataset: </label>
-	    <input type="file" class="custom-file-input" id="customFile" name="uploaded_file" required="">
-	    <br><br>
-        <input type="radio" name="choice" id="predict" value="prediction" required="">
-        <label for="predict">Prediction</label><br>
+      {{ formulario.file_path.errors }}
+      {{ formulario.file_path }}
 
-        <input type="radio" name="choice" id="classif" value="classification">
-        <label for="classif">Classification</label><br>
+	    <br><br>
+        <label for="predict">Category:  </label>
+        {{ formulario.category.errors }}
+        {{ formulario.category }}
         <br>
         <div class="mb-3">
           <label for="id_column" class="form-label">
-            Id dolumn name 
+            Id column name 
         	</label>
-          <input type="id_column" name="id_column" placeholder="e.g. Id, passengerId, etc..." autocomplete="id_column" minlength="1" class="textinput textInput form-control" id="id_column" style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; cursor: auto;">
+          {{ formulario.id_column.errors }}
+          {{ formulario.id_column }}
         </div>
 
         <div id="div_id_username" class="mb-3">
         	<label for="target_column" class="form-label requiredField">
-                Target column name 
-            </label>
-            <input type="text" name="target_column" placeholder="e.g. Price, Genre, etc..." autocomplete="target_column" minlength="1" class="textinput textInput form-control" required="" id="target_column">
+            Target column name 
+          </label>
+          {{ formulario.target_column.errors }}
+          {{ formulario.target_column }}
        	</div>
 
 	</fieldset>
@@ -59,3 +55,16 @@
     </div>
   </form>
 {% endblock %}
+
+
+{% block inline_javascript %}
+<script type="text/javascript">
+
+$("#loadDatasetForm").submit(function(){
+    $("#loadDatasetForm").submit(function(){
+        return false;
+    });
+});
+
+</script>
+{% endblock inline_javascript %}

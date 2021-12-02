@@ -21,7 +21,7 @@ class Register(models.Model):
     )
     file_path = models.FileField(
         upload_to='uploads/',
-        verbose_name=u'Imagen principal'
+        verbose_name=u'CSV file'
     )
     category = models.CharField(
         max_length=255,
