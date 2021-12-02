@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Load dataset{% endblock %}
+
+{% block content %}
+<h1>Feature selection</h1>
+<br>
+
+<p>This tool is for helping you select the best features for your dataset. Please have this considerations in mind:</p>
+
+<ul>
+	<li>You can upload datasets in <strong>.csv</strong> format.</li>
+	<li>The dataset must have a maximum size of 3MB.</li>
+	<li>Choose if your dataset will be used for prediction or classification.</li>
+	<li>Fill in the inputs with the column names of your <strong>id</strong> and <strong>target</strong>. Please write them exactly as they appear in your dataset. Have in mind uppercase letters.</li>
+</ul>
+
+<form id="loadDatasetForm" class="form-horizontal" method="post" action="{% url 'registers:process_dataset' %}" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <fieldset>
+    <legend><h1>{{ question.question_text }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <label for="customFile">Upload dataset: </label>
+    {{ formulario.file_path.errors }}
+    {{ formulario.file_path }}
+
+    <br><br>
+      <label for="predict">Category:  </label>
+      {{ formulario.category.errors }}
+      {{ formulario.category }}
+      <br>
+      <div class="mb-3">
+        <label for="id_column" class="form-label">
+          Id column name
+        </label>
+        {{ formulario.id_column.errors }}
+        {{ formulario.id_column }}
+      </div>
+
+      <div id="div_id_username" class="mb-3">
+        <label for="target_column" class="form-label requiredField">
+          Target column name
+        </label>
+        {{ formulario.target_column.errors }}
+        {{ formulario.target_column }}
+      </div>
+
+</fieldset>
+
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-primary">Get features</button>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+
+{% block inline_javascript %}
+<script type="text/javascript">
+
+$("#loadDatasetForm").submit(function(){
+    $("#loadDatasetForm").submit(function(){
+        return false;
+    });
+});
+
+</script>
+{% endblock inline_javascript %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>My Dataset List</h1>
+<br>
+
+<ul>
+	{% for register in registers %}
+	<li>
+		<a href="{% url 'registers:detail' register.id %}">
+			{{ register.file_name }} - {{ register.category }}
+		</a>
+	</li>
+	{% endfor %}
+</ul>
+{% endblock content %}
