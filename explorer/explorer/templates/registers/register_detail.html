@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h2>Register detail</h2>
+<br>
+<ul>
+	<li><strong>Name:</strong> {{ register.file_name }}</li>
+	<li><strong>Path:</strong> {{ register.file_path }}</li>
+	<li><strong>Category:</strong> {{ register.category }}</li>
+	<li><strong>Id column:</strong> 
+		{% if register.id_column %}
+		{{ register.id_column }}
+		{% else %}
+		None
+		{% endif %}
+	</li>
+	<li><strong>Target column:</strong> {{ register.target_column }}</li>
+	<li><strong>Created:</strong> {{ register.created }}</li>
+</ul>
+{% endblock content %}
