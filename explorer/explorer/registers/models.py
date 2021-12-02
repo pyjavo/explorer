@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-
 from registers import choices
 from explorer.users.models import User
 
@@ -33,6 +32,7 @@ class Register(models.Model):
     target_column = models.CharField(
         max_length=55, help_text=u'*Opcional'
     )
+    scores = models.JSONField()
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)

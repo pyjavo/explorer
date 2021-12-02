@@ -10,7 +10,6 @@ from .tools_feature_selection import prediction_flow, classification_flow
 from .models import Register
 from .forms import RegisterForm
 
-#messages.add_message(request, messages.INFO, 'Hello world.')
 
 @login_required
 def load_dataset(request):
@@ -63,7 +62,6 @@ def process_dataset(request):
 
 			# Dataset is created before temporary_file_path is lost after save
 			dataset = pd.read_csv(csv_file.temporary_file_path())
-			new_register.save()
 
 			category = request.POST['category']
 			id_column = request.POST['id_column'] # if empty it is an empty str
@@ -71,18 +69,16 @@ def process_dataset(request):
 
 			if category.lower() == 'prediction':
 				scores = prediction_flow(id_column, target_column, dataset)
-				print('scores', scores)
-				print('prediction solved')
 			elif category.lower() == 'classification':
 				scores = classification_flow(id_column, target_column, dataset)
-				print('scores', scores)
-				print('classification solved')
+
+			new_register.scores = scores.to_json(orient='split')
+			new_register.save()
 
 			messages.success(request, "Tu dataset ha sido creado satisfactoriamente.")
-			# TODO: save scores in register
 
 			data = {
-				'df': scores.to_html(),
+				'scores': scores.to_html(),
 				'category': category
 			}
 	
@@ -99,7 +95,11 @@ def my_datasets(request):
 @login_required
 def register_detail(request, register_id):
 	register = Register.objects.get(id=register_id)
-	data = {'register': register}
+	scores = pd.read_json(register.scores, orient='split')
+	data = {
+		'scores': scores.to_html(),
+		'register': register
+	}
 	return render(request, 'registers/register_detail.html', data)
 
 

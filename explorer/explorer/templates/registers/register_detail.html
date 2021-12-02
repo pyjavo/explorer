@@ -17,5 +17,10 @@
 	</li>
 	<li><strong>Target column:</strong> {{ register.target_column }}</li>
 	<li><strong>Created:</strong> {{ register.created }}</li>
+	<li>
+		<strong>Scores: </strong>
+		<br><br>
+		{{ scores|safe }}
+	</li>
 </ul>
 {% endblock content %}
