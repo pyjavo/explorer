@@ -11,6 +11,9 @@ from .models import Register
 from .forms import RegisterForm
 
 
+MAXIMUM_CSV_SIZE = 3.0
+
+
 @login_required
 def load_dataset(request):
 	if request.method == 'GET':
@@ -18,13 +21,13 @@ def load_dataset(request):
 
 	context = {
 		'formulario': formulario,
+		'MAXIMUM_CSV_SIZE': MAXIMUM_CSV_SIZE,
     }
 	return render(request, 'registers/load_dataset.html', context)
 
 
 @login_required
 def process_dataset(request):
-	MAXIMUM_CSV_SIZE = 3.0
 	data = {}
 
 	if request.method == "GET":
