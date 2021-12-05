@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .tools_feature_selection import prediction_flow, classification_flow, save_to_csv
-from .models import Register
+from .models import Register, AWSConstants
 from .forms import RegisterForm
 
 
@@ -93,7 +93,7 @@ def process_dataset(request):
 
 @login_required
 def my_datasets(request):
-	registers = Register.objects.filter(owner=request.user)
+	registers = Register.objects.filter(owner=request.user, active=True)
 	data = {'registers': registers}
 	return render(request, 'registers/my_datasets.html', data)
 
@@ -132,10 +132,20 @@ def download_new_dataset(request, register_id):
 # TODO: Check if works even if CORS or use origin link from cloud and a TemplateView
 @login_required
 def multivariate_analysis(request):
+
+	constants = AWSConstants.objects.all()[0]
+
+	if not constants:
+		messages.error(
+			request,
+			'Contact the administrator. AWS constants must be configured first to access.'
+		)
+		return HttpResponseRedirect(reverse("home"))
+
 	data = {
-		'albumBucketName': 'dummy',
-		'bucketRegion': 'dummy',
-		'IdentityPoolId': 'dummy',
-		'LambdaFunctionURL': 'dummy',
+		'albumBucketName': constants.album_bucket_name,
+		'bucketRegion': constants.bucket_region,
+		'IdentityPoolId': constants.identity_pool_id,
+		'LambdaFunctionURL': constants.lambda_function_url,
 	}
 	return render(request, 'registers/multivariate_analysis.html', data)

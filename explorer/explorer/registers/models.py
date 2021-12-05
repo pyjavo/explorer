@@ -30,23 +30,55 @@ class Register(models.Model):
         max_length=55, blank=True, help_text=u'*Optional'
     )
     target_column = models.CharField(
-        max_length=55, help_text=u'*Opcional'
+        max_length=55, help_text=u'*Optional'
     )
     scores = models.JSONField()
-    new_dataset = models.JSONField(default=dict)
+    new_dataset = models.JSONField(
+        default=dict, help_text=u'Generated file from the classification category'
+    )
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)
     owner = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,  # if user is delete it, so it's registers
+        on_delete=models.CASCADE,  # if the user is delete it, so it's registers
         related_name='registers'
     )
 
-    # TODO: aws integration
+    class Meta:
+        verbose_name = 'Register'
+        verbose_name_plural = 'Registers'
+
+    def __str__(self):
+        return self.file_name
+
+
+class AWSConstants(models.Model):
+    '''
+    Keys used for the multivariate analysis
+
+    Please refrain of adding a more objects. Just edit the current one
+    '''
+    album_bucket_name = models.CharField(
+        max_length=100,
+        help_text=u'Please refrain from adding more objects. Just edit the current one'
+    )
+    bucket_region = models.CharField(
+        max_length=50,
+    )
+    identity_pool_id = models.CharField(
+        max_length=150,
+    )
+    lambda_function_url = models.URLField(max_length=200)
+
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+    # TODO: AWS integration need these keys to let the feature selection process
+    # uploads the CSF file to the multivariate analysis by itself so the user
+    # does not have to load the file by himself (to sum. avoid manual upload)
     # s3_bucket_path = models.URLField(
     #     blank=True,
-    #     help_text='Escribe el enlace hacia tu página de Instagram'
     # )
 
     # s3_bucket_id = models.CharField(
@@ -55,8 +87,8 @@ class Register(models.Model):
     # )
 
     class Meta:
-        verbose_name = 'Register'
-        verbose_name_plural = 'Registers'
+        verbose_name = 'AWS Constant'
+        verbose_name_plural = 'AWS Constants'
 
     def __str__(self):
-        return self.file_name
+        return self.album_bucket_name
