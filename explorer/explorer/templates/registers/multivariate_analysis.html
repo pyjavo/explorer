@@ -1,0 +1,30 @@
+{% load static i18n %}<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" type="image/png" href="./assets/img/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,300,200" type="text/css" rel="stylesheet">    
+    <!-- CSS Files -->
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/paper-kit.css' %}">
+    <!-- AWS SDK_VERSION_NUMBER -->
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1008.0.min.js"></script>
+    {% include "registers/snippets/_s3_logic.html" %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body background="#000000">    
+    <div class="page-header" width="1024px" style="background-image: url('/static/assets/img/login-image.jpg');">
+      <div class="filter"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 ml-auto mr-auto">
+            <div id="app" class="card card-register">                            
+            </div>
+          </div>
+          <div class='container'>
+            {{prueba}}
+            Authors: Ruth Chirinos & Juan Carlos Vargas<br>UNIR Spain (Universidad Internacional de la Rioja)<br>    
+            <a href="mailto:ruth.chirinos@gmail.com">ruth.chirinos@gmail.com</a> | <a href="mailto:juancvargass16@gmail.com">juancvargass16@gmail.com</a>
+          </div>
+        </div>
+      </div>      
+  </body>  
+</html>

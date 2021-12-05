@@ -128,4 +128,14 @@ def download_new_dataset(request, register_id):
 	results.to_csv(path_or_buf=response, float_format='%.3f')
 	return response
 
-# TODO: View from challenge 3
+
+# TODO: Check if works even if CORS or use origin link from cloud and a TemplateView
+@login_required
+def multivariate_analysis(request):
+	data = {
+		'albumBucketName': 'dummy',
+		'bucketRegion': 'dummy',
+		'IdentityPoolId': 'dummy',
+		'LambdaFunctionURL': 'dummy',
+	}
+	return render(request, 'registers/multivariate_analysis.html', data)

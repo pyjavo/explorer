@@ -15,4 +15,9 @@ urlpatterns = [
         views.download_new_dataset,
         name="download_new_dataset"
     ),
+    path(
+        'multivariate-analysis',
+        views.multivariate_analysis,
+        name='multivariate_analysis',
+    ),
 ]
