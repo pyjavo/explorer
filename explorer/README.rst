@@ -1,4 +1,4 @@
-Explorer
+Django Platform: Explorer
 ========
 
 UAZ challenge for Reto 2 & 3
