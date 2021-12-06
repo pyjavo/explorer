@@ -1,2 +1,2 @@
-release: python manage.py migrate
-web: gunicorn config.wsgi:application
+release: python explorer/manage.py migrate
+web: cd explorer; gunicorn config.wsgi:application
