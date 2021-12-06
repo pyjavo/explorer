@@ -26,8 +26,9 @@ class AWSConstantsAdmin(admin.ModelAdmin):
         'modified',
     )
 
-    def has_add_permission(self, request):
-        return False
+    # Avoids admin user to add more object of AWS Constants
+    # def has_add_permission(self, request):
+    #     return False
 
 
 admin.site.register(AWSConstants, AWSConstantsAdmin)
