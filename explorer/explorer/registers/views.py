@@ -133,7 +133,7 @@ def download_new_dataset(request, register_id):
 @login_required
 def multivariate_analysis(request):
 
-	constants = AWSConstants.objects.all()[0]
+	constants = AWSConstants.objects.all()
 
 	if not constants:
 		messages.error(
@@ -143,9 +143,9 @@ def multivariate_analysis(request):
 		return HttpResponseRedirect(reverse("home"))
 
 	data = {
-		'albumBucketName': constants.album_bucket_name,
-		'bucketRegion': constants.bucket_region,
-		'IdentityPoolId': constants.identity_pool_id,
-		'LambdaFunctionURL': constants.lambda_function_url,
+		'albumBucketName': constants[0].album_bucket_name,
+		'bucketRegion': constants[0].bucket_region,
+		'IdentityPoolId': constants[0].identity_pool_id,
+		'LambdaFunctionURL': constants[0].lambda_function_url,
 	}
 	return render(request, 'registers/multivariate_analysis.html', data)
