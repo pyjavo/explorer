@@ -62,6 +62,17 @@ See detailed `cookiecutter-django Heroku documentation`_.
 
 
 
+### For enabling registration
+
+Currently if someone goes to the URL /accounts/signup/ and completes the form it will throw a 500 error because some setup is missing. To enable registration, please follow these steps:
+
+- Adquire an SMTP Email servide like [Sendgrid](https://sendgrid.com/), and add the initial setup configuration inside the config/production.py
+- Add this li item in base.html next to the "sign in"
+```
+<li class="nav-item">
+  <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
+</li>
+```
 
 
 
