@@ -18,24 +18,26 @@
 	</li>
 	<li><strong>Target column:</strong> {{ register.target_column }}</li>
 	<li><strong>Created:</strong> {{ register.created }}</li>
-	<li>
-		<strong>Scores: </strong>
-		<br><br>
+</ul>
+<div class="row align-items-start">
+	<div class="col">
+		<h4>Scores: </h4>
+		<br>
 		{{ scores|safe }}
-	</li>
-	<br>
-	{% if register.new_dataset %}
-	<li>
-		<a href="{% url 'registers:download_new_dataset' register.id %}"><button class="btn btn-primary">Download auto generated CSV</button></a>
-	</li>
-	{% endif %}
-	<li>
-		<h3> Select your features: </h3>
+		<br><br>
+		{% if register.new_dataset %}
+			<a href="{% url 'registers:download_new_dataset' register.id %}"><button class="btn btn-primary">Download auto generated CSV</button></a>
+		<br><br>
+		{% endif %}
+	</div>
+	<div class="col">
+		<h4> Select your features: </h4>
 		<form action="{% url 'registers:detail' register.id %}" method="post">
 			{% csrf_token %}
 			{{ columns_form }}
-			<input type="submit" value="Submit">
+			<br><br>
+			<input type="submit" class="btn btn-success" value="Generate CSV">
 		</form>
-	</li>
-</ul>
+	</div>
+</div>
 {% endblock content %}
