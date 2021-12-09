@@ -29,5 +29,13 @@
 		<a href="{% url 'registers:download_new_dataset' register.id %}"><button class="btn btn-primary">Download auto generated CSV</button></a>
 	</li>
 	{% endif %}
+	<li>
+		<h3> Select your features: </h3>
+		<form action="{% url 'registers:detail' register.id %}" method="post">
+			{% csrf_token %}
+			{{ columns_form }}
+			<input type="submit" value="Submit">
+		</form>
+	</li>
 </ul>
 {% endblock content %}
