@@ -30,6 +30,7 @@
 		<br><br>
 		{% endif %}
 	</div>
+	{% if columns_form %}
 	<div class="col">
 		<h4> Select your features: </h4>
 		<form action="{% url 'registers:detail' register.id %}" method="post">
@@ -39,5 +40,6 @@
 			<input type="submit" class="btn btn-success" value="Generate CSV">
 		</form>
 	</div>
+	{% endif %}
 </div>
 {% endblock content %}

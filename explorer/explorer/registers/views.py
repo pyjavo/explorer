@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from .tools_feature_selection import prediction_flow, classification_flow, save_to_csv
 from .models import Register, AWSConstants
@@ -107,30 +108,35 @@ def register_detail(request, register_id):
     # Build URL path for the read_csv method
     csv_path = register.file_path.url
     website_domain_url = request.META['HTTP_REFERER'].split('/registers')[0]
-    dataset = pd.read_csv(website_domain_url + csv_path)
+    columns_form = []  # TODO: delete if MEDIA files are managed
 
-    if request.method == 'GET':
-        list_of_columns = dataset.columns.to_list()
-        columns_form = ChooseColumnsDataframeForm(questions=list_of_columns)
+    if settings.DEBUG:
+        # TODO: Implement AWS S3 to manage MEDIA files. Only works locally
+        # MEDIA files are files uploaded by the user
+        dataset = pd.read_csv(website_domain_url + csv_path)
 
-    if request.method == 'POST':
-        # Choose selected columns
-        new_columns = []
-        for key, value in request.POST.items():
-            if key != 'csrfmiddlewaretoken':
-                new_columns.append(key)
+        if request.method == 'GET':
+            list_of_columns = dataset.columns.to_list()
+            columns_form = ChooseColumnsDataframeForm(questions=list_of_columns)
 
-        new_dataset = dataset[new_columns]
+        if request.method == 'POST':
+            # Choose selected columns
+            new_columns = []
+            for key, value in request.POST.items():
+                if key != 'csrfmiddlewaretoken':
+                    new_columns.append(key)
 
-        # TODO: For larger CSV files, please check:
-        # https://docs.djangoproject.com/en/3.2/howto/outputting-csv/#streaming-large-csv-files
+            new_dataset = dataset[new_columns]
 
-        # return new CSV file
-        response = HttpResponse(content_type='text/csv')
-        new_file_name = 'new_'+str(register.file_name)+'.csv'
-        response['Content-Disposition'] = 'attachment; filename='+new_file_name
-        new_dataset.to_csv(path_or_buf=response, float_format='%.3f')
-        return response
+            # TODO: For larger CSV files, please check:
+            # https://docs.djangoproject.com/en/3.2/howto/outputting-csv/#streaming-large-csv-files
+
+            # return new CSV file
+            response = HttpResponse(content_type='text/csv')
+            new_file_name = 'new_'+str(register.file_name)+'.csv'
+            response['Content-Disposition'] = 'attachment; filename='+new_file_name
+            new_dataset.to_csv(path_or_buf=response, float_format='%.3f')
+            return response
 
     data = {
         'scores': scores.to_html(),
