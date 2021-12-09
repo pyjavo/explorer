@@ -1,6 +1,9 @@
 from .base import *  # noqa
 from .base import env
 
+import cloudinary
+import cloudinary_storage
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
@@ -60,7 +63,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # MEDIA
 # ------------------------------------------------------------------------------
-
+# While served on Heroku it will be manage by Cloudinary service (check at the end of this file)
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
@@ -150,5 +153,14 @@ LOGGING = {
     },
 }
 
-# Your stuff...
+# CLOUDINARY
 # ------------------------------------------------------------------------------
+INSTALLED_APPS += ["cloudinary", "cloudinary_storage"]
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME':  env("CLOUDINARY_CLOUD_NAME", default=""),
+    'API_KEY': env("CLOUDINARY_API_KEY", default=""),
+    'API_SECRET': env("CLOUDINARY_API_SECRET", default=""),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
