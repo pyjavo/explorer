@@ -1,0 +1,13 @@
+# Example for production vars
+# ------------------------------------------------------------------------------
+
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=123456KeySuperSecreto
+DJANGO_ADMIN_URL=admin/
+DJANGO_ALLOWED_HOSTS=www.example.com
+DEBUG=False
+DB_USER=mydbuser
+DB_PASSWORD=1223456789sdghjklmexample_password
+DB_NAME=somerandomname
+DB_HOST=ec2-123456.compute-1.amazonaws.com
+DATABASE_URL=postgres://mydbuser:1223456789sdghjklmexample_password@ec2-123456.compute-1.amazonaws.com:5432/somerandomname
