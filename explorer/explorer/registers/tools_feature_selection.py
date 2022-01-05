@@ -21,6 +21,9 @@ from sklearn.feature_selection._base import SelectorMixin
 from sklearn.exceptions import NotFittedError
 
 
+# ==================================================
+# Functions for Regression datasets listed below
+
 def get_feature_out(estimator, feature_in):
     """
     From https://stackoverflow.com/q/57528350/2142093
@@ -78,7 +81,8 @@ def get_ct_feature_names(ct, X_train):
 
 def get_split_values(dataset, remove_columns, target, test_size=0.25):
     '''
-    Include the target in the remove_columns argument
+    You must include the ID and the target in the remove_columns argument.
+    This function help us remove undesired columns from our X and y outputs
     '''
     y = dataset[target]
     X = dataset.drop(remove_columns,axis=1)
@@ -91,6 +95,9 @@ def get_split_values(dataset, remove_columns, target, test_size=0.25):
 
 
 def get_cat_num_cols(dataset, X_train):
+    '''
+    Get the categorical and numerical columns of your dataset
+    '''
     cat_cols = [i for i in X_train.columns if dataset.dtypes[i]=='object']
     num_cols = X_train._get_numeric_data().columns
 
@@ -101,7 +108,8 @@ def get_df_selected_features(X_train, y_train, p_value, cat_cols, num_cols):
     '''
     Select best features
 
-    output: Dataframe with filtered columns and another DataFrame with names of the columns
+    output: Dataframe with filtered columns and another DataFrame with
+    names of the columns
     '''
     num_pipeline = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
@@ -140,7 +148,11 @@ def get_df_selected_features(X_train, y_train, p_value, cat_cols, num_cols):
 
 
 def get_feature_scores(result_df, column_names, classif=False):
-
+    '''
+    Return the scores table ordered in descending order.
+    If classif variable is True, it will run as it is defined in the notebook
+    that works with classification datasets.
+    '''
     if classif == True:
     	# for classification datasets
         column_names=pd.DataFrame(column_names)
@@ -182,7 +194,8 @@ def prediction_flow(id_column, target_column, dataset):
 	return scores
 
 
-# Classification methods
+# ==================================================
+# Functions for Classification datasets listed below
 
 
 def classif_get_split_values(X, y, train_size):
@@ -226,6 +239,10 @@ def show_results(r):
 
 
 def classification_flow(id_column, target_column, dataset):
+    '''
+    Makes the feature selection for classification datasets.
+    Implementations with f_classif and mutual_info_classif are commented
+    '''
     if id_column:
         remove_columns = [id_column, target_column]
     else:
